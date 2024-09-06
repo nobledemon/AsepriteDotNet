@@ -17,12 +17,13 @@ public static class AsepriteFrameExtensions
     /// Flattens the a <see cref="AsepriteFrame"/> into an array of <see cref="Rgba32"/> values.
     /// </summary>
     /// <param name="frame">The <see cref="AsepriteFrame"/> to flatten.</param>
+    /// <param name="requiredLayers">What layers to use when flattening.</param>
     /// <param name="onlyVisibleLayers">Indicates whether only cels on visible layers should be included.</param>
     /// <param name="includeBackgroundLayer">Indicates whether cels on the background layer should be included.</param>
     /// <param name="includeTilemapCels">Indicates whether tilemap cels should be included.</param>
     /// <returns>A array of <see cref="Rgba32"/> value representing the flattened frame.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="frame"/> is <see langword="null"/>.</exception>
-    public static Rgba32[] FlattenFrame(this AsepriteFrame frame, bool onlyVisibleLayers = true, bool includeBackgroundLayer = false, bool includeTilemapCels = true)
+    public static Rgba32[] FlattenFrame(this AsepriteFrame frame, bool onlyVisibleLayers = true, bool includeBackgroundLayer = false, bool includeTilemapCels = true, List<string>? requiredLayers = null)
     {
         ArgumentNullException.ThrowIfNull(frame);
 
@@ -36,7 +37,7 @@ public static class AsepriteFrameExtensions
             {
                 cel = linkedCel.Cel;
             }
-
+            if (requiredLayers != null && !requiredLayers.Contains(cel.Layer.Name)) { continue; } 
             if (onlyVisibleLayers && !cel.Layer.IsVisible) { continue; }
             if (cel.Layer.IsBackgroundLayer && !includeBackgroundLayer) { continue; }
 
